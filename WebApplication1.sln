@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApplication2", "WebAppli
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApplication1", "WebApplication1\WebApplication1.csproj", "{8F5684DC-7882-4555-884B-FA24C437F4A1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthApps", "AuthApps\AuthApps.csproj", "{12F6309C-1279-4A5E-A416-BB8AB8D28680}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthApps.Api", "AuthApps.Api\AuthApps.Api.csproj", "{38E47E8F-4368-4884-9F9F-B47B0E91E663}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{8F5684DC-7882-4555-884B-FA24C437F4A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8F5684DC-7882-4555-884B-FA24C437F4A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8F5684DC-7882-4555-884B-FA24C437F4A1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{12F6309C-1279-4A5E-A416-BB8AB8D28680}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12F6309C-1279-4A5E-A416-BB8AB8D28680}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12F6309C-1279-4A5E-A416-BB8AB8D28680}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12F6309C-1279-4A5E-A416-BB8AB8D28680}.Release|Any CPU.Build.0 = Release|Any CPU
+		{38E47E8F-4368-4884-9F9F-B47B0E91E663}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38E47E8F-4368-4884-9F9F-B47B0E91E663}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38E47E8F-4368-4884-9F9F-B47B0E91E663}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38E47E8F-4368-4884-9F9F-B47B0E91E663}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

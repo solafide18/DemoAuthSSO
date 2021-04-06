@@ -12,8 +12,11 @@ namespace WebApplication2.Models
     {
         [Key]
         public int id { get; set; }
+        [Required]
         public string user_name { get; set; }
         public string email { get; set; }
+        [Required]
+        public string password { get; set; }
         public int role_id { get; set; }
     }
 }

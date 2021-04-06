@@ -12,6 +12,7 @@ namespace WebApplication2.Models
     {
         [Key]
         public int id { get; set; }
+        [Required]
         public string role_name { get; set; }
     }
 }

@@ -47,7 +47,7 @@ namespace WebApplication1.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "id,user_name,email,role_id")] t_user t_user)
+        public ActionResult Create([Bind(Include = "id,user_name,email,password,role_id")] t_user t_user)
         {
             if (ModelState.IsValid)
             {
@@ -79,7 +79,7 @@ namespace WebApplication1.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "id,user_name,email,role_id")] t_user t_user)
+        public ActionResult Edit([Bind(Include = "id,user_name,email,password,role_id")] t_user t_user)
         {
             if (ModelState.IsValid)
             {

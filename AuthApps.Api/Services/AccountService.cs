@@ -1,4 +1,5 @@
-﻿using AuthApps.Api.Models.RequestModels;
+﻿using AuthApps.Api.Models.DBModels;
+using AuthApps.Api.Models.RequestModels;
 using AuthApps.Api.Models.ViewModels;
 using AuthApps.Data;
 using Microsoft.IdentityModel.JsonWebTokens;
@@ -33,7 +34,8 @@ namespace AuthApps.Api.Services
                         {
                             user_name = s.username,
                             message = "user found",
-                            mac_address = s.mac_address
+                            mac_address = s.mac_address,
+                            is_login = s.is_login ?? false
                         }
                     ).FirstOrDefault();
                 }
@@ -45,13 +47,50 @@ namespace AuthApps.Api.Services
             return result;
         }
 
-        public void UpdateUserLogin(string user, bool isLogin)
+        public t_user_login UpdateUserLogin(string user, bool isLogin)
+        {
+            DbAuthAppContext db = new DbAuthAppContext();
+
+            t_user_login userData = new t_user_login();
+
+            try
+            {
+                userData = db.user_login.Where(q => q.username == user).FirstOrDefault();
+                userData.is_login = isLogin;
+                db.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return userData;
+        }
+        public void SetUserLogin(string user)
         {
             try
             {
                 using (DbAuthAppContext db = new DbAuthAppContext())
                 {
                     var userData = db.user_login.Where(q => q.username == user).FirstOrDefault();
+                    userData.is_login = true;
+                    db.SaveChanges();
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
+        public bool CekUserLogin(string user, bool isLogin)
+        {
+            try
+            {
+                using (DbAuthAppContext db = new DbAuthAppContext())
+                {
+                    var userData = db.user_login.Where(q => q.username == user).FirstOrDefault();
+                    if (!(userData.is_login ?? false)) 
+                        return false;
                     userData.is_login = isLogin;
                     db.SaveChanges();
                 }
@@ -60,6 +99,26 @@ namespace AuthApps.Api.Services
             {
 
             }
+
+            return true;
+        }
+        public bool UserIsLogin(string user)
+        {
+            bool result = false;
+            try
+            {
+                using (DbAuthAppContext db = new DbAuthAppContext())
+                {
+                    var userData = db.user_login.Where(q => q.username == user).FirstOrDefault();
+                    result = userData.is_login ?? false;
+                    db.SaveChanges();
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return result;
         }
 
         public string GenerateJSONWebToken(UserInfoModel userInfo)
@@ -72,15 +131,17 @@ namespace AuthApps.Api.Services
                 new Claim(JwtRegisteredClaimNames.Sub, userInfo.user_name),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim("macaddress", userInfo.mac_address ?? ""),
-                new Claim("role", "user")
+                new Claim("role", "user"),
+                new Claim("is_login", userInfo.sis_login)
             };
 
             var token = new JwtSecurityToken(
-                issuer: ConfigurationManager.AppSettings["Jwt_Issuer"],
-                audience: ConfigurationManager.AppSettings["Jwt_Audience"],
-                claims,
-                expires: DateTime.Now.AddMinutes(int.Parse(ConfigurationManager.AppSettings["SessionTimeOut"] ?? "60")),
-                signingCredentials: credentials);
+               issuer: ConfigurationManager.AppSettings["Jwt_Issuer"],
+               audience: ConfigurationManager.AppSettings["Jwt_Audience"],
+               claims,
+               expires: DateTime.Now.AddMinutes(int.Parse(ConfigurationManager.AppSettings["SessionTimeOut"] ?? "60")),
+               signingCredentials: credentials);
+
             var encodetoken = new JwtSecurityTokenHandler().WriteToken(token);
             return encodetoken;
         }
@@ -96,15 +157,17 @@ namespace AuthApps.Api.Services
                 new Claim(JwtRegisteredClaimNames.Sub, claimsSession[0]?.Value),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim("macaddress", claimsSession[2].Value ?? ""),
-                new Claim("role", "user")
+                new Claim("role", "user"),
+                new Claim("is_login", claimsSession[4].Value ?? "0")
             };
 
             var token = new JwtSecurityToken(
-                issuer: ConfigurationManager.AppSettings["Jwt_Issuer"],
-                audience: ConfigurationManager.AppSettings["Jwt_Audience"],
-                claims,
-                expires: DateTime.Now.AddMinutes(int.Parse(ConfigurationManager.AppSettings["SessionTimeOut"] ?? "60")),
-                signingCredentials: credentials);
+               issuer: ConfigurationManager.AppSettings["Jwt_Issuer"],
+               audience: ConfigurationManager.AppSettings["Jwt_Audience"],
+               claims,
+               expires: DateTime.Now.AddMinutes(int.Parse(ConfigurationManager.AppSettings["SessionTimeOut"] ?? "60")),
+               signingCredentials: credentials);
+
             var encodetoken = new JwtSecurityTokenHandler().WriteToken(token);
             return encodetoken;
         }

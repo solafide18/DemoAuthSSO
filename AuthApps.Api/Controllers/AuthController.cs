@@ -1,4 +1,5 @@
-﻿using AuthApps.Api.Models.RequestModels;
+﻿using AuthApps.Api.Models.DBModels;
+using AuthApps.Api.Models.RequestModels;
 using AuthApps.Api.Models.ResponseModels;
 using AuthApps.Api.Services;
 using System;
@@ -37,7 +38,7 @@ namespace AuthApps.Api.Controllers
                         status_desc = "sign in"
                     });
             }
-            _accountService.UpdateUserLogin(user.user_name, true);
+            _accountService.SetUserLogin(user.user_name);
             return Response;
         }
         [HttpPost]
@@ -53,10 +54,11 @@ namespace AuthApps.Api.Controllers
                 {
                     IList<Claim> claims = identity.Claims.ToList();
                     model.user_name = claims[0]?.Value;
+                    model.token = "XXXXXXTokeininvalid";
                     model.status_code = "200";
                     model.status_desc = "sign out";
                 }
-                _accountService.UpdateUserLogin(model.user_name, false);
+                _accountService.CekUserLogin(model.user_name, false);
             }
             return Ok(model);
         }
@@ -72,6 +74,20 @@ namespace AuthApps.Api.Controllers
                 if (identity != null)
                 {
                     IList<Claim> claims = identity.Claims.ToList();
+
+                    //cek user is login
+                    //if (_accountService.UserIsLogin(claims[0]?.Value))
+                    //{
+                    //    return Unauthorized();
+                    //}
+
+                    //t_user_login data = new t_user_login();
+
+                    //data = _accountService.UpdateUserLogin(model.user_name, true);
+                    if(_accountService.CekUserLogin(model.user_name, true))
+                    {
+                        return Unauthorized();
+                    }
                     string tokenStr = _accountService.RefreshJSONWebToken(claims);
 
                     model.user_name = claims[0]?.Value;
@@ -79,7 +95,6 @@ namespace AuthApps.Api.Controllers
                     model.session_time_out = int.Parse(ConfigurationManager.AppSettings["SessionTimeOut"] ?? "60");
                     model.status_code = "200";
                     model.status_desc = "success";
-                    _accountService.UpdateUserLogin(model.user_name, true);
                 }
             }
             return Ok(model);

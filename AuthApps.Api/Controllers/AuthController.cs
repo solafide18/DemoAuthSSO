@@ -34,12 +34,32 @@ namespace AuthApps.Api.Controllers
                         token = tokenStr,
                         session_time_out = int.Parse(ConfigurationManager.AppSettings["SessionTimeOut"] ?? "60"),
                         status_code = "200",
-                        status_desc = "success"
+                        status_desc = "sign in"
                     });
             }
+            _accountService.UpdateUserLogin(user.user_name, true);
             return Response;
         }
-
+        [HttpPost]
+        [Authorize]
+        [Route("api/Auth/SignOut")]
+        public IHttpActionResult SignOut()
+        {
+            UserTokenModel model = new UserTokenModel();
+            if (User.Identity.IsAuthenticated)
+            {
+                var identity = User.Identity as ClaimsIdentity;
+                if (identity != null)
+                {
+                    IList<Claim> claims = identity.Claims.ToList();
+                    model.user_name = claims[0]?.Value;
+                    model.status_code = "200";
+                    model.status_desc = "sign out";
+                }
+                _accountService.UpdateUserLogin(model.user_name, false);
+            }
+            return Ok(model);
+        }
         [HttpPost]
         [Authorize]
         [Route("api/Auth/ValidateToken")]
@@ -52,9 +72,14 @@ namespace AuthApps.Api.Controllers
                 if (identity != null)
                 {
                     IList<Claim> claims = identity.Claims.ToList();
+                    string tokenStr = _accountService.RefreshJSONWebToken(claims);
+
                     model.user_name = claims[0]?.Value;
+                    model.token = tokenStr;
+                    model.session_time_out = int.Parse(ConfigurationManager.AppSettings["SessionTimeOut"] ?? "60");
                     model.status_code = "200";
                     model.status_desc = "success";
+                    _accountService.UpdateUserLogin(model.user_name, true);
                 }
             }
             return Ok(model);
@@ -71,8 +96,8 @@ namespace AuthApps.Api.Controllers
                 var identity = User.Identity as ClaimsIdentity;
                 List<Claim> claims = identity.Claims.ToList();
                 tokenStr = _accountService.RefreshJSONWebToken(claims);
+                _accountService.UpdateUserLogin(claims[0]?.Value, true);
             }
-
             return Ok(
                 new TokenInfoModel
                 {

@@ -45,6 +45,23 @@ namespace AuthApps.Api.Services
             return result;
         }
 
+        public void UpdateUserLogin(string user, bool isLogin)
+        {
+            try
+            {
+                using (DbAuthAppContext db = new DbAuthAppContext())
+                {
+                    var userData = db.user_login.Where(q => q.username == user).FirstOrDefault();
+                    userData.is_login = isLogin;
+                    db.SaveChanges();
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
+
         public string GenerateJSONWebToken(UserInfoModel userInfo)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(ConfigurationManager.AppSettings["Jwt_Key"]));
@@ -68,7 +85,7 @@ namespace AuthApps.Api.Services
             return encodetoken;
         }
 
-        public string RefreshJSONWebToken(List<Claim> claimsSession)
+        public string RefreshJSONWebToken(IList<Claim> claimsSession)
         {
 
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(ConfigurationManager.AppSettings["Jwt_Key"]));

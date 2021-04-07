@@ -204,7 +204,8 @@
     </Compile>
     <Compile Include="Models\DBModels\t_user_login.cs" />
     <Compile Include="Models\RequestModels\UserLoginModel.cs" />
-    <Compile Include="Models\ResponseModels\TokenInfoModels.cs" />
+    <Compile Include="Models\ResponseModels\TokenInfoModel.cs" />
+    <Compile Include="Models\ResponseModels\UserTokenModel.cs" />
     <Compile Include="Models\ViewModels\UserInfoModel.cs" />
     <Compile Include="Models\ResponseModels\DefaultResponseModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

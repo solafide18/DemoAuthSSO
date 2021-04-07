@@ -5,9 +5,9 @@ using System.Web;
 
 namespace AuthApps.Api.Models.ResponseModels
 {
-    public class DefaultResponseModel
+    public class TokenInfoModel : DefaultResponseModel
     {
-        public string status_code { get; set; }
-        public string status_desc { get; set; }
+        public string token { get; set; }
+        public int session_time_out { get; set; }
     }
 }

@@ -67,5 +67,29 @@ namespace AuthApps.Api.Services
             var encodetoken = new JwtSecurityTokenHandler().WriteToken(token);
             return encodetoken;
         }
+
+        public string RefreshJSONWebToken(List<Claim> claimsSession)
+        {
+
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(ConfigurationManager.AppSettings["Jwt_Key"]));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+            var claims = new[]
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, claimsSession[0]?.Value),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim("macaddress", claimsSession[2].Value ?? ""),
+                new Claim("role", "user")
+            };
+
+            var token = new JwtSecurityToken(
+                issuer: ConfigurationManager.AppSettings["Jwt_Issuer"],
+                audience: ConfigurationManager.AppSettings["Jwt_Audience"],
+                claims,
+                expires: DateTime.Now.AddMinutes(int.Parse(ConfigurationManager.AppSettings["SessionTimeOut"] ?? "60")),
+                signingCredentials: credentials);
+            var encodetoken = new JwtSecurityTokenHandler().WriteToken(token);
+            return encodetoken;
+        }
     }
 }

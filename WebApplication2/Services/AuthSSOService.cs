@@ -25,7 +25,7 @@ namespace WebApplication2.Services
             using(var client = new HttpClient())
             {
                 client.DefaultRequestHeaders.Clear();
-                client
+                //client
             }
         }
     }
